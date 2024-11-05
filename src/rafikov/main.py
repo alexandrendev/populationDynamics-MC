@@ -1,38 +1,33 @@
 from Param import *
 from Interval import *
+from random import random
+from Equation import Equation
 
-p = Param(Equilibrium.FIRST)
-def getHostIntervals(initialValues: list[int]) -> list[float]:
-    H, I, P = initialValues
-
-    first = p.r * (1 - H / p.K) * H
-    second = p.n1 * H 
-    third = p.beta * H * P
-    
-    values = [
-        (first, Effect.LIVE),
-        (second, Effect.DIE),
-        (third, Effect.DIE)]
-    
-    sortedValues = sorted(values, key=lambda x: x[0])
-    
-    intervals = [
-        Interval(sortedValues[0][0], Position.MIN, sortedValues[0][1]),
-        Interval(sortedValues[1][0], Position.MID, sortedValues[1][1]),
-        Interval(sortedValues[2][0], Position.MAX, sortedValues[2][1]),
-    ]
-    
-    return intervals
+# dHdt = r * (1 - H / K) * H - n1 * H - beta * H * P
+# dIdt = beta * H * P - m2 * I - n2 * I
+# dPdt = gamma * n2 * I - m3 * P
 
 
+
+
+'''
+-----------------------------------------------------------------------
+'''
 Hosts = 3000
 Infected = 600
 Parasitoid = 3000
-
 initialValues = [Hosts, Infected, Parasitoid]
-intervals = getHostIntervals(initialValues)
 
+p = Param(Equilibrium.FIRST)
+e = Equation(initialValues)
 
+HostInterval = e.getFirstLineInterval(p)
+InfectedInterval = e.getSecondLineInterval(p)
+ParasitoidInterval = e.getThirdLineInterval(p)
 
+minimo = list(filter(lambda x: x.position == Position.MIN, HostInterval))
+maximo = list(filter(lambda x: x.position == Position.MAX, HostInterval))
 
-
+print(maximo)
+print(minimo)
+# print(ParasitoidInterval[1])

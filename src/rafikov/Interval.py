@@ -14,3 +14,6 @@ class Interval:
         self.value = value
         self.position = position
         self.effect = effect
+        
+    def __str__(self) -> str:
+        return f'{self.value} {self.effect}'
