@@ -6,6 +6,14 @@ class Equation:
         self.initialValues = initialValues
         
         
+from Param import *
+from Interval import *
+
+class Equation:
+    def __init__(self, initialValues: list[int]):
+        self.initialValues = initialValues
+        
+        
     def getFirstLineInterval(self, p: Param) -> list[float]:
         H, I, P = self.initialValues
         
@@ -32,10 +40,10 @@ class Equation:
     
     def getSecondLineInterval(self, p: Param) -> list[float]:
         H, I, P = self.initialValues
-        # secondLine = p.beta * H * P - p.m2 * I - p.n2 * I
+        # secondLine = p.beta * H *  - p.m2 * I - p.n2 * I
         firstTerm = p.beta * H * P
-        secondTerm = -p.m2 * I
-        thirdTerm = -p.n2 * I
+        secondTerm = p.m2 * I
+        thirdTerm = p.n2 * I
         
         values = [
             (firstTerm, Effect.LIVE),
@@ -58,7 +66,7 @@ class Equation:
         # thirdLine = p.gamma * p.n2 * I - p.m3 * P
         
         firstTerm = p.gamma * p.n2 * I
-        secondTerm = - p.m3 * P
+        secondTerm = p.m3 * P
         
         values = [
             (firstTerm, Effect.LIVE),
