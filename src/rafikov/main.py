@@ -15,27 +15,11 @@ def initialValues(hosts: Individual, infected: Individual, parasitoid: Individua
         parasitoid.currentPopulation
     ]
 
-def monteCarlo(interval: list[Interval], individual: Individual):
-    current = individual.initialPopulation
-    
-    for i in range(current):
-        value = np.random.uniform(0, interval[-1].value)
-
-        if len(interval) == 3 and value > interval[1].value:
-            individual.applyEffect(interval[2])
-        elif value <= interval[0].value:
-            individual.applyEffect(interval[0])
-        elif value <= interval[1].value:
-            individual.applyEffect(interval[1])
-        # print(individual.currentPopulation)
-        individual.initialPopulation = individual.currentPopulation
-
-
 # pegar os intrvalos de novo e passar para os próximos dias
 def execute():
-    hosts = Individual(3000, Type.HOST)
-    infected = Individual(600, Type.INFECTED)
-    parasitoid = Individual(3000, Type.PARASITOID)
+    hosts = Host(3000, Type.HOST)
+    infected = Infected(600, Type.INFECTED)
+    parasitoid = Parasitoid(3000, Type.PARASITOID)
 
     params = Param(Equilibrium.FIRST)
     e = Equation(initialValues(hosts, infected, parasitoid)) 
@@ -48,13 +32,13 @@ def execute():
     days = 10
 
     for _ in range(days):
-        monteCarlo(hostInterval, hosts)
+        hosts.monteCarlo(hostInterval)
         hosts.initialPopulation = hosts.currentPopulation
 
-        monteCarlo(infectedInterval, infected)
+        infected.monteCarlo(infectedInterval)
         infected.initialPopulation = infected.currentPopulation
         
-        monteCarlo(parasitoidInterval, parasitoid)
+        parasitoid.monteCarlo(parasitoidInterval)
         parasitoid.initialPopulation = parasitoid.currentPopulation
 
         e = Equation(initialValues(
