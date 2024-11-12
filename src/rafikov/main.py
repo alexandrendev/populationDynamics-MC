@@ -8,33 +8,12 @@ import numpy as np
 # dIdt = beta * H * P - m2 * I - n2 * I
 # dPdt = gamma * n2 * I - m3 * P
 
-
-'''
------------------------------------------------------------------------
-Initial values definition
------------------------------------------------------------------------
-'''
-hosts = Individual(3000, Type.HOST)
-infected = Individual(600, Type.INFECTED)
-parasitoid = Individual(3000, Type.PARASITOID)
-
-initialValues = [
-    hosts.initialPopulation,
-    infected.initialPopulation,
-    parasitoid.initialPopulation
-]
-'''
------------------------------------------------------------------------
-'''
-
-params = Param(Equilibrium.FIRST)
-e = Equation(initialValues) 
-
-hostInterval = e.getFirstLineInterval(params)
-infectedInterval = e.getSecondLineInterval(params)
-parasitoidInterval = e.getThirdLineInterval(params)
-
-
+def initialValues(hosts: Individual, infected: Individual, parasitoid: Individual) -> list[int]:
+    return [
+        hosts.currentPopulation,
+        infected.currentPopulation,
+        parasitoid.currentPopulation
+    ]
 
 def monteCarlo(interval: list[Interval], individual: Individual):
     current = individual.initialPopulation
@@ -51,13 +30,42 @@ def monteCarlo(interval: list[Interval], individual: Individual):
         # print(individual.currentPopulation)
         individual.initialPopulation = individual.currentPopulation
 
+
+# pegar os intrvalos de novo e passar para os próximos dias
 def execute():
+    hosts = Individual(3000, Type.HOST)
+    infected = Individual(600, Type.INFECTED)
+    parasitoid = Individual(3000, Type.PARASITOID)
+
+    params = Param(Equilibrium.FIRST)
+    e = Equation(initialValues(hosts, infected, parasitoid)) 
+
+    hostInterval = e.getFirstLineInterval(params)
+    infectedInterval = e.getSecondLineInterval(params)
+    parasitoidInterval = e.getThirdLineInterval(params)
+
+
     days = 10
 
     for _ in range(days):
         monteCarlo(hostInterval, hosts)
+        hosts.initialPopulation = hosts.currentPopulation
+
         monteCarlo(infectedInterval, infected)
+        infected.initialPopulation = infected.currentPopulation
+        
         monteCarlo(parasitoidInterval, parasitoid)
+        parasitoid.initialPopulation = parasitoid.currentPopulation
+
+        e = Equation(initialValues(
+            hosts,
+            infected,
+            parasitoid
+        ))
+
+        hostInterval = e.getFirstLineInterval(params)
+        infectedInterval = e.getSecondLineInterval(params)
+        parasitoidInterval = e.getThirdLineInterval(params)
     
     print(hosts.currentPopulation)
     print(infected.currentPopulation)

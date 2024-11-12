@@ -20,8 +20,8 @@ class Equation:
         # firstLine = p.r * (1 - H / p.K) * H - p.n1 * H - p.beta * H * P
         
         firstTerm = p.r * (1 - H / p.K) * H
-        secondTerm = p.n1 * H 
-        thirdTerm = p.beta * H * P
+        secondTerm = -p.n1 * H 
+        thirdTerm = -p.beta * H * P
         
         values = [
             (firstTerm, Effect.LIVE),
@@ -42,8 +42,8 @@ class Equation:
         H, I, P = self.initialValues
         # secondLine = p.beta * H *  - p.m2 * I - p.n2 * I
         firstTerm = p.beta * H * P
-        secondTerm = p.m2 * I
-        thirdTerm = p.n2 * I
+        secondTerm = -p.m2 * I
+        thirdTerm = -p.n2 * I
         
         values = [
             (firstTerm, Effect.LIVE),
@@ -66,7 +66,7 @@ class Equation:
         # thirdLine = p.gamma * p.n2 * I - p.m3 * P
         
         firstTerm = p.gamma * p.n2 * I
-        secondTerm = p.m3 * P
+        secondTerm = -p.m3 * P
         
         values = [
             (firstTerm, Effect.LIVE),
