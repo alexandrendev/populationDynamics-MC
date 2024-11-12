@@ -17,9 +17,9 @@ def initialValues(hosts: Individual, infected: Individual, parasitoid: Individua
 
 # pegar os intrvalos de novo e passar para os próximos dias
 def execute():
-    hosts = Host(3000, Type.HOST)
-    infected = Infected(600, Type.INFECTED)
-    parasitoid = Parasitoid(3000, Type.PARASITOID)
+    hosts = Host(3000)
+    infected = Infected(600)
+    parasitoid = Parasitoid(3000)
 
     params = Param(Equilibrium.FIRST)
     e = Equation(initialValues(hosts, infected, parasitoid)) 
@@ -29,17 +29,17 @@ def execute():
     parasitoidInterval = e.getThirdLineInterval(params)
 
 
-    days = 10
+    days = 20
 
     for _ in range(days):
-        hosts.monteCarlo(hostInterval)
-        hosts.initialPopulation = hosts.currentPopulation
-
+        
+        infectedHosts = hosts.monteCarlo(hostInterval)
+        
         infected.monteCarlo(infectedInterval)
-        infected.initialPopulation = infected.currentPopulation
         
         parasitoid.monteCarlo(parasitoidInterval)
-        parasitoid.initialPopulation = parasitoid.currentPopulation
+        
+        infected.updateCurrentPopulation(infected.currentPopulation + infectedHosts)
 
         e = Equation(initialValues(
             hosts,

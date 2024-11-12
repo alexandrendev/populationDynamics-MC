@@ -10,9 +10,8 @@ class Effect(Enum):
     DIE = (2, "-1")
 
 class Interval:
-    def __init__(self, value: float, position: Position, effect: Effect):
+    def __init__(self, value: float, effect: Effect):
         self.value = value
-        self.position = position
         self.effect = effect
         
     def __str__(self) -> str:
