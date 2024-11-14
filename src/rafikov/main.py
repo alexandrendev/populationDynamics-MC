@@ -17,7 +17,7 @@ def initialValues(hosts, infected, parasitoid):
         parasitoid
     ]
 
-def execute():
+def execute(equilibrium: Equilibrium):
 
     '''
     --------------------
@@ -28,7 +28,7 @@ def execute():
     infected = Infected(600)
     parasitoid = Parasitoid(3000)
 
-    params = Param(Equilibrium.FIRST)
+    params = Param(equilibrium)
     e = Equation(initialValues(
         hosts.currentPopulation,
         infected.currentPopulation,
@@ -78,9 +78,10 @@ def execute():
     ]
     
     paramDay = Parameter(dataDays, "Days")
-    plot(paramDay, params)
+    name = f'graphs/rafikov{equilibrium.name.lower()}.png' 
+    plot(paramDay, params, name)
     print(hosts.currentPopulation)
     print(infected.currentPopulation)
     print(parasitoid.currentPopulation)
 
-execute()
+execute(Equilibrium.FIRST)

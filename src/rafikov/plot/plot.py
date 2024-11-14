@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from plot.Parameter import Parameter
 
-def plot(days: list[Parameter], params: list[Parameter]): 
+def plot(days: list[Parameter], params: list[Parameter], name: str): 
         plt.figure(figsize=(10, 6))
         
         for param in params:
@@ -12,4 +12,4 @@ def plot(days: list[Parameter], params: list[Parameter]):
         plt.ylabel("Population")
         plt.legend()
         plt.grid()
-        plt.savefig("output.png")
+        plt.savefig(name)
