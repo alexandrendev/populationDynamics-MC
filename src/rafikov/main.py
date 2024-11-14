@@ -41,10 +41,17 @@ def execute(equilibrium: Equilibrium):
 
 
     days = 250
-    dataHosts = []
-    dataInfected = []
-    dataParasitoid= []
+    dataHosts = [
+        hosts.currentPopulation
+    ]
+    dataInfected = [
+        infected.currentPopulation
+    ]
+    dataParasitoid= [
+        parasitoid.currentPopulation
+    ]
     dataDays = []
+    
     for day in range(days):
 
         dataDays.append(day)
