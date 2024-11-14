@@ -23,18 +23,18 @@ class Host(Individual):
         
         
     def monteCarlo(self, interval: list[Interval]):
-        hostsInfected = 0
+        deadHosts = 0
         for i in range(self.currentPopulation):
-            value = np.random.uniform(interval[0].value, interval[-1].value)
+            value = np.random.uniform(0, interval[-1].value)
             if value > 0 and value < interval[0].value:
                 self.applyEffect(interval[0])
-            elif value <= interval[1].value: # 1st interval
+            elif value <= interval[1].value:
                 self.applyEffect(interval[1])
+                # deadHosts += 1
             elif value <= interval[2].value:
-                self.applyEffect(interval[1]) # 2nd interval
-                hostsInfected += 1
-            # print(individual.currentPopulation)
-        return hostsInfected
+                self.applyEffect(interval[2])
+                deadHosts += 1
+        return deadHosts
     
 class Infected(Individual):
     def __init__(self, initialPopulation: int):
@@ -42,18 +42,18 @@ class Infected(Individual):
         
         
     def monteCarlo(self, interval: list[Interval]):
-        hostsInfected = 0
+        dead = 0
         for i in range(self.currentPopulation):
-            value = np.random.uniform(interval[0].value, interval[-1].value)
-            if value > 0 and value <= interval[0].value: # last interval if it exists
-                self.applyEffect(interval[2])
-                hostsInfected += 1
-            elif value <= interval[1].value: # 1st interval
-                self.applyEffect(interval[0])
+            value = np.random.uniform(0, interval[-1].value)
+            if value > 0 and value <= interval[0].value:
+                self.applyEffect(interval[0]) #IRÁ REPRODUZIR?
+            elif value <= interval[1].value:
+                self.applyEffect(interval[1])
+                dead += 1
             elif value <= interval[2].value:
-                self.applyEffect(interval[1]) # 2nd interval
-            # print(individual.currentPopulation)
-        return hostsInfected
+                self.applyEffect(interval[2])
+                dead += 1
+        return dead
     
 class Parasitoid(Individual):
     def __init__(self, initialPopulation: int):
@@ -62,7 +62,7 @@ class Parasitoid(Individual):
     def monteCarlo(self, interval: list[Interval]):
         hostsInfected = 0
         for i in range(self.currentPopulation):
-            value = np.random.uniform(interval[0].value, interval[-1].value)
+            value = np.random.uniform(0, interval[-1].value)
             if value <= interval[0].value: # 1st interval
                 self.applyEffect(interval[0])
             elif value <= interval[1].value:
