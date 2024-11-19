@@ -13,3 +13,4 @@ def plot(days: list[Parameter], params: list[Parameter], name: str):
         plt.legend()
         plt.grid()
         plt.savefig(name)
+        plt.close()

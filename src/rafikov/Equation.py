@@ -46,7 +46,7 @@ class Equation:
         
         values = [
             Interval(firstTerm, Effect.LIVE),
-            Interval(firstTerm + secondTerm, Effect.DIE),
+            Interval(firstTerm + secondTerm, Effect.DIE)
         ]
         
         return values
