@@ -4,6 +4,22 @@ from Interval import *
 class Equation:
     def __init__(self, initialValues: list[int]):
         self.initialValues = initialValues
+
+
+    def _normalize_by_max(self, intervals: list[Interval]):
+        # Extrair os valores dos intervalos
+        limits = [interval.value for interval in intervals]
+        max_value = max(limits)
+        
+        # Evitar divisão por zero
+        if max_value == 0:
+            return [Interval(0, interval.effect) for interval in intervals]
+        
+        # Dividir cada valor pelo máximo
+        return [
+            Interval(interval.value / max_value, interval.effect)
+            for interval in intervals
+        ]
         
         
     def getFirstLineInterval(self, p: Param):
@@ -20,7 +36,7 @@ class Equation:
             Interval(firstTerm + secondTerm, Effect.DIE),
             Interval(firstTerm + secondTerm + thirdTerm, Effect.DIE)]
         
-        return values        
+        return self._normalize_by_max(values)
     
     def getSecondLineInterval(self, p: Param):
         H, I, P = self.initialValues
@@ -34,7 +50,7 @@ class Equation:
             Interval(firstTerm + secondTerm, Effect.DIE),
             Interval(firstTerm + secondTerm + thirdTerm, Effect.DIE)]
     
-        return values
+        return self._normalize_by_max(values)
     
     
     def getThirdLineInterval(self, p:Param):
@@ -49,4 +65,4 @@ class Equation:
             Interval(firstTerm + secondTerm, Effect.DIE)
         ]
         
-        return values
+        return self._normalize_by_max(values)

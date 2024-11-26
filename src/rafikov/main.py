@@ -8,20 +8,19 @@ from plot.plot import plot
 from populations.Day import Day
 from dotenv import load_dotenv
 import os
-
-
-output_dir = '/app/graphs'
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+import time
     
 load_dotenv()
-eq = os.getenv('EQUILIBRIUM')
+EQUILIBRIUM = os.getenv('EQUILIBRIUM')
+DAYS = int(os.getenv('DAYS'))
+SIMULATIONS = int(os.getenv('SIMULATIONS'))
 # dHdt = r * (1 - H / K) * H - n1 * H - beta * H * P
 # dIdt = beta * H * P - m2 * I - n2 * I
 # dPdt = gamma * n2 * I - m3 * P
 
 daysList = []
 
+'''==============================================='''
 def initialValues(hosts, infected, parasitoid): 
     return [
         hosts,
@@ -29,62 +28,50 @@ def initialValues(hosts, infected, parasitoid):
         parasitoid
     ]
 
-def execute(equilibrium: Equilibrium, days = 500):
-
-    '''
-    --------------------
-    INITIAL POPULATIONS
-    --------------------
-    '''
-    hosts = Host(3000)
-    infected = Infected(600)
-    parasitoid = Parasitoid(3000)
-
-    params = Param(equilibrium)
+'''==============================================='''
+def initializeEquilibrium(host: int, infected: int, parasitoid: int):
+    hosts = Host(host)
+    infected = Infected(infected)
+    parasitoid = Parasitoid(parasitoid)
+    params = Param(Equilibrium[EQUILIBRIUM])
     e = Equation(initialValues(
         hosts.currentPopulation,
         infected.currentPopulation,
         parasitoid.currentPopulation
-    )) 
+    ))
+    return hosts, infected, parasitoid, params, e
 
-    hostInterval = e.getFirstLineInterval(params)
-    infectedInterval = e.getSecondLineInterval(params)
-    parasitoidInterval = e.getThirdLineInterval(params)
-
-    dataHosts = [
-        hosts.currentPopulation
-    ]
-    dataInfected = [
-        infected.currentPopulation
-    ]
-    dataParasitoid= [
+'''==============================================='''
+def simulateDay(day, hosts, infected, parasitoid, params, e):
+    hosts.monteCarlo(e.getFirstLineInterval(params))
+    infected.monteCarlo(e.getSecondLineInterval(params))
+    parasitoid.monteCarlo(e.getThirdLineInterval(params))
+    e = Equation(initialValues(
+        hosts.currentPopulation,
+        infected.currentPopulation,
         parasitoid.currentPopulation
-    ]
+    ))
+    daysList.append(Day(day+1, hosts.currentPopulation, infected.currentPopulation, parasitoid.currentPopulation))
+    return hosts, infected, parasitoid, params, e
+
+'''==============================================='''
+def execute(equilibrium: Equilibrium, days = DAYS):
+    hosts, infected, parasitoid, params, e = initializeEquilibrium(3000, 600, 3000)    
+
+
+    dataHosts = [hosts.currentPopulation]
+    dataInfected = [infected.currentPopulation]
+    dataParasitoid = [parasitoid.currentPopulation]
     dataDays = []
     
-    for day in range(days):
+    for day in range(DAYS):
+        # print(f'Executando dia {day + 1} \t Início: {time.ctime()}')
         dataDays.append(day)
-        hosts.monteCarlo(hostInterval)
-        
-        infected.monteCarlo(infectedInterval)
-        
-        parasitoid.monteCarlo(parasitoidInterval)
+        hosts, infected, parasitoid, params, e = simulateDay(day, hosts, infected, parasitoid, params, e)
 
-        e = Equation(initialValues(
-            hosts.currentPopulation,
-            infected.currentPopulation,
-            parasitoid.currentPopulation
-        ))
-
-        hostInterval = e.getFirstLineInterval(params)
-        infectedInterval = e.getSecondLineInterval(params)
-        parasitoidInterval = e.getThirdLineInterval(params)
-        
         dataHosts.append(hosts.currentPopulation)
         dataInfected.append(infected.currentPopulation)
         dataParasitoid.append(parasitoid.currentPopulation)
-
-        daysList.append(Day(day+1, hosts.currentPopulation, infected.currentPopulation, parasitoid.currentPopulation))
         
         '''==============================================='''
     params = [
@@ -92,24 +79,23 @@ def execute(equilibrium: Equilibrium, days = 500):
         Parameter(dataInfected, "Infected"),
         Parameter(dataParasitoid, "Parasitoid")
     ]
-    
-    paramDay = Parameter(dataDays, "Days")
-    name = f'graphs/rafikov{equilibrium.name.lower()}.png' 
-    plot(paramDay, params, name)
-    
-    # print(hosts.currentPopulation)
-    # print(infected.currentPopulation)
-    # print(parasitoid.currentPopulation)
-    
 
-
-for _ in range(500):
-    execute(Equilibrium[eq])
+    # paramDay = Parameter(dataDays, "Days")
+    # name = f'graphs/rafikov{equilibrium.name.lower()}.png' 
+    # plot(paramDay, params, name)
+'''==============================================='''
+    #CHAMADA DE @X SIMULAÇÕES PASSANDO O DEVIDO
+    #EQUILIBRIO COM O VALOR DA VARIÁVEL DE AMBIENTE
+'''==============================================='''
+for _ in range(SIMULATIONS):
+    print(f'Simulação {_+1} \t Time: {time.ctime()}')
+    execute(Equilibrium[EQUILIBRIUM])
 
 medias = {}
 
-for i in range(500):
-    dia = list(filter(lambda x: x.day == i + 1, daysList))
+'''==============================================='''
+for i in range(DAYS + 1):
+    dia = list(filter(lambda x: x.day == i, daysList))
     
     if dia:
         hosts_values = [d.hosts for d in dia]
@@ -120,16 +106,17 @@ for i in range(500):
         meanInfected = sum(infected_values) / len(infected_values)
         meanParasitoid = sum(parasitoid_values) / len(parasitoid_values)
         
-        medias[i + 1] = [meanHosts, meanInfected, meanParasitoid]
+        medias[i] = [meanHosts, meanInfected, meanParasitoid]
     else:
         print(f"Nenhum dado para o dia {i + 1}")
-        
-mediaHosts = [medias[day][0] for day in range(1, 251)]
-mediaInfected = [medias[day][1] for day in range(1, 251)]
-mediaParasitoid = [medias[day][2] for day in range(1, 251)]
 
 
-paramDay = Parameter(list(range(1, 251)), "Days")
+'''==============================================='''
+mediaHosts = [medias[day][0] for day in range(1, DAYS)]
+mediaInfected = [medias[day][1] for day in range(1, DAYS)]
+mediaParasitoid = [medias[day][2] for day in range(1, DAYS)]
+
+paramDay = Parameter(list(range(1, DAYS + 1)), "Days")
 
 params = [
     Parameter(mediaHosts, "Hosts (Média)"),
@@ -137,11 +124,7 @@ params = [
     Parameter(mediaParasitoid, "Parasitoid (Média)")
 ]
 
-name = f'graphs/medias_populacao-{eq}.png'
+name = f'graphs/medias_populacao-{EQUILIBRIUM}.png'
 
+'''==============================================='''
 plot(paramDay, params, name)
-
-
-# print(daysList[0].day)
-    # execute(Equilibrium.SECOND)
-    # execute(Equilibrium.THIRD)
