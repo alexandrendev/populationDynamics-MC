@@ -1,0 +1,45 @@
+@startuml
+
+title Population Dynamics Model
+
+start
+repeat
+    :Definição de parâmetros;
+    :Inicialização das populações;
+    repeat
+    
+    Switch (Hosts->Sorteia um valor)
+    case(valor pertence ao 1º intervalo)
+        :Hosts ++;
+    case (valor pertence ao 2º intervalo)
+        :Hosts --;
+    case (valor pertence ao 3º intervalo)
+        :Hosts --;
+    endswitch
+
+    Switch (Infected->Sorteia um valor)
+    case (valor pertence ao 1º intervalo)
+        :Infected ++;
+    case (valor pertence ao 2º intervalo)
+        :Infected --;
+    case (valor pertence ao 3º intervalo)
+        :Infected --;
+    endswitch
+
+    Switch (Parasitoid->Sorteia um valor)
+    case (valor pertence ao 1º intervalo)
+        :Parasitoid ++;
+    case (valor pertence ao 2º intervalo)
+        :Parasitoid --;
+    endswitch
+
+    :Atualização dos valores das populações;
+    :Guarda informações do dia;
+    repeat while (Repete até simular todos os dias)
+repeat while (Repete até satisfazer o número de simulações)
+
+:Cálculo da média das simulações;
+:Geração do gráfico de médias;
+stop
+
+@enduml
