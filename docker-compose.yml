@@ -2,30 +2,37 @@ version: "3.8"
 
 services:
   equilibrium_first:
-    image: teste:latest  # Nome da imagem já buildada
+    image: alexandrendev/rafikov-avg:1.0.0
     environment:
+      #MUDE OS VALORES DEPOIS DO = CONFORME DESEJADO
       - EQUILIBRIUM=FIRST
+      - DAYS=250
+      - SIMULATIONS=100
     volumes:
-      - ~/graphs:/app/graphs  # Mapeia o diretório local ./graphs para /app/graphs dentro do container
-    container_name: equilibrium_first
+      - ~/graphs:/app/graphs
+    container_name: norm_equilibrium_first
     restart: on-failure
 
   equilibrium_second:
-    image: teste:latest  # Nome da imagem já buildada
+    image: alexandrendev/rafikov-avg:1.0.0
     environment:
+    #MUDE OS VALORES DEPOIS DO = CONFORME DESEJADO
       - EQUILIBRIUM=SECOND
+      - DAYS=250
+      - SIMULATIONS=100
     volumes:
-      - ~/graphs:/app/graphs  # Mapeia o diretório local ./graphs para /app/graphs dentro do container
-    container_name: equilibrium_second
+      - ~/graphs:/app/graphs
+    container_name: norm_equilibrium_second
     restart: on-failure
 
   equilibrium_third:
-    image: teste:latest  # Nome da imagem já buildada
+    image: alexandrendev/rafikov-avg:1.0.0
     environment:
+    #MUDE OS VALORES DEPOIS DO = CONFORME DESEJADO
       - EQUILIBRIUM=THIRD
+      - DAYS=250
+      - SIMULATIONS=100
     volumes:
-      - ~/graphs:/app/graphs  # Mapeia o diretório local ./graphs para /app/graphs dentro do container
-    container_name: equilibrium_third
+      - ~/graphs:/app/graphs
+    container_name: norm_equilibrium_third
     restart: on-failure
-
-
