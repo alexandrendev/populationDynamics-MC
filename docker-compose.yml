@@ -36,3 +36,5 @@ services:
       - ~/graphs:/app/graphs
     container_name: norm_equilibrium_third
     restart: on-failure
+
+    #docker-compose build --no-cache
