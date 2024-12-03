@@ -83,17 +83,22 @@ def execute(equilibrium: Equilibrium, days = DAYS):
     # paramDay = Parameter(dataDays, "Days")
     # name = f'graphs/rafikov{equilibrium.name.lower()}.png' 
     # plot(paramDay, params, name)
-'''==============================================='''
-    #CHAMADA DE @X SIMULAÇÕES PASSANDO O DEVIDO
-    #EQUILIBRIO COM O VALOR DA VARIÁVEL DE AMBIENTE
-'''==============================================='''
+    
+
+''' ===============================================
+        CHAMADA DE @X SIMULAÇÕES PASSANDO O DEVIDO
+        EQUILIBRIO COM O VALOR DA VARIÁVEL DE AMBIENTE
+    ==============================================='''
 for _ in range(SIMULATIONS):
     print(f'Simulação {_+1} \t Time: {time.ctime()}')
     execute(Equilibrium[EQUILIBRIUM])
 
 medias = {}
 
-'''==============================================='''
+''' ===============================================
+        CÁLCULO DOS VALORES MÉDIOS PARA CADA DIA DA
+        SIMULAÇÃO
+    ==============================================='''
 for i in range(DAYS + 1):
     dia = list(filter(lambda x: x.day == i, daysList))
     
