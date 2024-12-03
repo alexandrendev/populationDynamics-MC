@@ -4,8 +4,7 @@ title Population Dynamics Model
 
 start
 repeat
-    :Definição de parâmetros;
-    :Inicialização das populações;
+    :Parâmetros e condições iniciais;
     repeat
     
     Switch (Hosts->Sorteia um valor)
@@ -33,13 +32,13 @@ repeat
         :Parasitoid --;
     endswitch
 
-    :Atualização dos valores das populações;
+    :Atualização do # de indivíduos;
     :Guarda informações do dia;
-    repeat while (Repete até simular todos os dias)
-repeat while (Repete até satisfazer o número de simulações)
+    repeat while (Próximo passo de tempo)
+repeat while (Finalizou o # de evoluções?)
 
-:Cálculo da média das simulações;
-:Geração do gráfico de médias;
+:Cálculo da média e análise gráfica; 
+
 stop
 
 @enduml
